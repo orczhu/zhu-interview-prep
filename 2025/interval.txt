@@ -1,0 +1,5 @@
+Interval related questions:
+Merge interval
+Key:
+sort per start
+compare think about end and handle accordingly
