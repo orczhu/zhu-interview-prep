@@ -29,3 +29,6 @@ public class Solution {
         return helper(root).isBST;
     }
 }
+
+# it has corner case like single root node with max or min value
+# we need to return true
