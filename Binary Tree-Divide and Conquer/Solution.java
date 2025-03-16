@@ -19,7 +19,7 @@ public class Solution {
         ResultType left = helper(root.left);
         ResultType right = helper(root.right);
         
-        if(!left.isBST || !right.isBST || left.maxValue >= root.val || right.minValue <= root.val) {
+        if(!left.isBST || !right.isBST || (root.left != null && left.maxValue >= root.val) || (root.right != null && right.minValue <= root.val)) {
             return new ResultType(Long.MIN_VALUE, Long.MAX_VALUE, false);
         }
         
@@ -31,4 +31,4 @@ public class Solution {
 }
 
 # it has corner case like single root node with max or min value
-# we need to return true
+# make sure when comparing (root.left != null && left.maxValue >= root.val) || (root.right != null && right.minValue <= root.val)
