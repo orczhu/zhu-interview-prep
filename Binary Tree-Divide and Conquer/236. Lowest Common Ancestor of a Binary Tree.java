@@ -19,3 +19,11 @@ public class Solution {
         return null;
     }
 }
+
+
+// idea
+// if found node or null, bubble up
+//traverse left and right
+if  left is null, it means lca is right
+if  right is null it means lca is left
+if both not null, it means lca is cross both, which should be root.  
