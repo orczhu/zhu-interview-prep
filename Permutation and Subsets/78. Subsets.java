@@ -1,22 +1,25 @@
-public class Solution {
-   public List<List<Integer>> subsets(int[] nums) {
-    List<List<Integer>> list = new ArrayList<>();
-    Arrays.sort(nums);
-    backtrack(list, new ArrayList<>(), nums, 0);
-    return list;
-}
+class Solution {
+    public List<List<Integer>> subsets(int[] A) {
+        List<List<Integer>> rst = new ArrayList<>();
+        if (A == null || A.length == 0) {
+            return rst;
+        }
 
-private void backtrack(List<List<Integer>> list , List<Integer> tempList, int [] nums, int start){
-    list.add(new ArrayList<>(tempList));
-    for(int i = start; i < nums.length; i++){
-        tempList.add(nums[i]);
-        backtrack(list, tempList, nums, i + 1);
-        tempList.remove(tempList.size() - 1);
+        dfs(A, new ArrayList<Integer>(), 0, rst);
+        return rst;
     }
- }
+
+    private void dfs(int[] A, List<Integer> curr, int idx, List<List<Integer>> rst) {
+        rst.add(new ArrayList<>(curr));
+        for (int i = idx; i < A.length; i++) {
+            curr.add(A[i]);
+            dfs(A, curr, i + 1, rst);
+            curr.remove(curr.size() - 1);
+        }
+    }
 }
 // subsets
-https://leetcode.com/problems/combinations/
+https://leetcode.com/problems/subsets/
 
 class Solution {
     public List<List<Integer>> combine(int n, int k) {
