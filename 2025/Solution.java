@@ -46,3 +46,34 @@ public class Solution {
 
         return rest;
     }
+
+    // subarray sum
+    // maintain a dict to store prefix sum and index
+    // once it found sum again, it means the subarray sum is 0 and
+    // return dict[sum] + 1 to current index
+    public List<Integer> subarraySum(int[] A) {
+        // write your code here
+        List<Integer> rst = new ArrayList<>();
+        if (A == null || A.length == 0) {
+            return rst;
+        }
+        // key is value, value is index
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int sum = 0;
+        for (int i = 0; i < A.length; i++) {
+            sum += A[i];
+            if (map.containsKey(sum)) {
+                // find the possible Solution
+                // should be previous one + 1 to current.
+                rst.add(map.get(sum) + 1);
+                rst.add(i);
+                return rst;
+            }
+            map.put(sum, i);
+        }
+
+        return rst;
+    }
+
+    
