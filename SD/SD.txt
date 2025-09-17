@@ -1,0 +1,18 @@
+#Key-value
+### hash key into sepcific service, but issue add or remove server ###
+
+consistent hash, mapping servier into ring and clockwise to nearest server also map to copy as well.
+CAP triange
+consistentency
+availablity
+Partition tolerance
+depends on what you need
+
+evnentually consistency
+
+
+### long short ###
+Opt1 hash and take the sequence, drawback: collison and need multiple db lookup and recal to get more bytes
+Opt2 get next version and base62 decode, no collision and no lookup
+centralized server, how to scale. -> consistent harsh -> above case
+short -> db -> long url -> 301 redirect (Need cache to speed up)
