@@ -63,3 +63,79 @@ public class Solution {
 
     }
 }
+
+
+// Alien Dictionary
+public class Solution {
+    /**
+     * @param words: a list of words
+     * @return: a string which is correct order
+     */
+    public String alienOrder(String[] A) {
+        // Write your code here
+        // t->f,w -> e,r -> t, e -> r
+        if (A == null || A.length == 0) {
+            return "";
+        }
+
+        // topological sort
+        Map<Character, Integer> indegree = new HashMap<>();
+        // edge
+        Map<Character, List<Character>> edge = new HashMap<>();
+        for (int i = 0; i < A.length; i++) {
+            String word = A[i];
+            char[] arr = word.toCharArray();
+            for (int j = 0; j < arr.length; j++) {
+                edge.putIfAbsent(arr[j], new ArrayList<>());
+                indegree.putIfAbsent(arr[j], 0);
+            }
+        }
+        for (int i = 0; i + 1 < A.length; i++) {
+            char[] curr = A[i].toCharArray();
+            int ic = 0;
+            char[] next = A[i + 1].toCharArray();
+            int in = 0;
+            // remove ['abc', 'ab']
+            if (curr.length > next.length && A[i].startsWith(A[i + 1])) {
+                return "";
+            }
+            while (ic < curr.length && in < next.length) {
+                if (curr[ic] == next[in]) {
+                    ic++;
+                    in++;
+                } else {
+                    // find the connection
+                    // update indegree
+                    indegree.put(next[in], indegree.get(next[in]) + 1);
+                    edge.get(curr[ic]).add(next[in]);
+                    break;
+                }
+            }
+        }
+        StringBuffer sb = new StringBuffer();
+        PriorityQueue<Character> qu = new PriorityQueue<>();
+        for (char key : indegree.keySet()) {
+            if (indegree.get(key) == 0) {
+                qu.offer(key);
+            }
+        }
+        while (!qu.isEmpty()) {
+            char now = qu.poll();
+            sb.append(now);
+            // update indegree
+            for (char connect : edge.get(now)) {
+                indegree.put(connect, indegree.get(connect) - 1);
+                if (indegree.get(connect) == 0) {
+                    qu.offer(connect);
+                }
+            }
+        }
+        if (sb.length() == indegree.size()) {
+            return sb.toString();
+        } else {
+            return "";
+        }
+           
+    }
+}              
+

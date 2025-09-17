@@ -1,21 +1,32 @@
-public class Solution {
-    public List<List<Integer>> subsetsWithDup(int[] nums) {
-        Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        List<Integer> list = new ArrayList<>();
-        helper(res, list, nums, 0);
-        return res;
+https://leetcode.com/problems/subsets-ii/
+
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] A) {
+        List<List<Integer>> rst = new ArrayList<>();
+        if (A == null || A.length == 0) {
+            return rst;
+        }
+
+        boolean[] vist = new boolean[A.length];
+        Arrays.sort(A);
+        dfs(A, rst, new ArrayList<Integer>(), 0, vist);
+        return rst;
     }
-    
-    public void helper(List<List<Integer>> res, List<Integer> list, int[] nums, int pos) {
-        res.add(new ArrayList<>(list));
-        for (int i = pos; i < nums.length; i++) {
-            if (i != pos && nums[i] == nums[i - 1]) {
+
+    private void dfs(int[] A, List<List<Integer>> rst, List<Integer> curr, int idx, boolean[] vist) {
+        rst.add(new ArrayList<>(curr));
+        for (int i = idx; i < A.length; i++) {
+            if (vist[i]) {
                 continue;
             }
-            list.add(nums[i]);
-            helper(res, list, nums, i + 1);
-            list.remove(list.size() - 1);
+            if (i - 1 >= 0 && A[i] == A[i - 1] && !vist[i - 1]) {
+                continue;
+            } 
+            vist[i] = true;
+            curr.add(A[i]);
+            dfs(A, rst, curr, i + 1, vist);
+            curr.remove(curr.size() - 1);
+            vist[i] = false;
         }
     }
 }
