@@ -16,3 +16,10 @@ Opt1 hash and take the sequence, drawback: collison and need multiple db lookup 
 Opt2 get next version and base62 decode, no collision and no lookup
 centralized server, how to scale. -> consistent harsh -> above case
 short -> db -> long url -> 301 redirect (Need cache to speed up)
+
+
+### Rate Limit ###
+# fix window
+# sliding window
+# token bucket
+# leaky bucket
