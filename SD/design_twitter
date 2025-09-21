@@ -1,0 +1,83 @@
+# Twitter System Design
+
+## Database Schema (Relational)
+
+### Users Table
+```sql
+CREATE TABLE users (
+    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    display_name VARCHAR(100),
+    followers_count INT DEFAULT 0,
+    following_count INT DEFAULT 0,
+    tweets_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_username (username)
+);
+```
+
+### Tweets Table
+```sql
+CREATE TABLE tweets (
+    tweet_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    likes_count INT DEFAULT 0,
+    retweets_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    INDEX idx_user_created (user_id, created_at DESC)
+);
+```
+
+### Follows Table
+```sql
+CREATE TABLE follows (
+    follower_id BIGINT NOT NULL,
+    following_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, following_id),
+    FOREIGN KEY (follower_id) REFERENCES users(user_id),
+    FOREIGN KEY (following_id) REFERENCES users(user_id)
+);
+```
+
+## API Design
+
+### Tweet Operations
+- POST /api/v1/tweets - Create tweet
+- GET /api/v1/tweets/{tweet_id} - Get tweet
+- GET /api/v1/timeline/home - Home timeline
+- GET /api/v1/timeline/user/{user_id} - User timeline
+
+### Social Graph
+- POST /api/v1/users/{user_id}/follow - Follow user
+- DELETE /api/v1/users/{user_id}/follow - Unfollow user
+
+## Microservices Architecture
+
+### Core Services (8-10)
+1. **User Service** - Authentication, profiles
+2. **Tweet Service** - Create/read tweets
+3. **Social Graph Service** - Follow relationships  
+4. **Timeline Service** - Generate feeds (most complex)
+5. **Engagement Service** - Likes, retweets
+6. **Search Service** - Tweet/user search
+7. **Notification Service** - Push notifications
+8. **Media Service** - Image/video handling
+
+## Tweet Creation Flow
+1. Client ’ API Gateway ’ User Service (auth)
+2. API Gateway ’ Tweet Service ’ Store in DB
+3. Tweet Service ’ Kafka Event ’ Timeline Service
+4. Timeline Service ’ Fan-out to followers' timelines (Redis cache)
+5. Async: Notification Service, Search indexing
+
+## Key Scaling Decisions
+- **Timeline Generation**: Hybrid push/pull model
+- **Sharding**: By user_id for data locality
+- **Caching**: Redis for hot timelines and tweets
+- **Fan-out**: Push for normal users, pull for celebrities
+- **Database**: Read replicas, consistent hashing
