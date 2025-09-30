@@ -1,4 +1,13 @@
-# NineChapter-Algorithm
-这是一份对九章算法课程的课堂笔记，模板以及例题答案的总结
-# prefix-sum review
+# prepare python coding
+## Complete
+* Dict
+* List
+* Set()
+* deque
+
+## To be done
+* multithread
+* lock
+* array
+* string
 

@@ -1,0 +1,22 @@
+# 1 on 1 chat
+# many to many
+# polling vs long polling vs websocket
+
+client -htto-> chat server
+chat server -websocket-- user
+receipt is online -> pushing to message queue
+each chat service connect multiple server
+A want to chat with b
+a with serviceA 
+b with serviceB
+servceA --RPC-- serviceB
+serviceB --websocket--userB
+
+Need chatServer, serviceDiscorvery(etcd), notification service
+
+# group chat
+group user -> group ---> different users online or offline
+etcd is distributed key/value store
+store service up and down status with TTL
+# alive status
+websocket heartbeat -> keep alive

@@ -1,0 +1,66 @@
+Video Document Example:
+  {
+    "videoId": "abc123",
+    "userId": "user456",
+    "originalFile": {
+      "s3Key": "uploads/abc123/original.mp4",
+      "size": 2147483648,
+      "duration": 3600,
+      "resolution": "1920x1080"
+    },
+    "transcoded": {
+      "1080p": "videos/abc123/1080p.mp4",
+      "720p": "videos/abc123/720p.mp4",
+      "480p": "videos/abc123/480p.mp4",
+      "360p": "videos/abc123/360p.mp4"
+    },
+    "thumbnails": [
+      "thumbnails/abc123/thumb_1.jpg",
+      "thumbnails/abc123/thumb_5.jpg"
+    ],
+    "status": "ready", // uploading, processing, ready, failed
+    "uploadedAt": "2023-09-23T12:00:00Z",
+    "processedAt": "2023-09-23T12:15:00Z",
+    "metadata": {
+      "title": "My Video",
+      "description": "...",
+      "tags": ["tech", "tutorial"]
+    }
+  }
+
+  SQS Message:
+  {
+    "videoId": "abc123",
+    "s3Bucket": "videos-raw",
+    "s3Key": "uploads/abc123.mp4",
+    "outputFormats": ["1080p", "720p", "480p", "360p"],
+    "priority": "normal",
+    "userId": "user456",
+    "retryCount": 0
+
+
+    POST https://transcoder-service.com/api/jobs
+  {
+    "videoId": "abc123",
+    "s3Key": "uploads/abc123.mp4",
+    "callbackUrl": "https://app-service.com/webhook/transcode-complete"
+  }
+
+  Response: 202 Accepted { "jobId": "job_xyz" }
+
+  Step 2: Transcoder Service processes video
+  Transcoder Service:
+  - Downloads video from S3
+  - Transcodes to multiple formats
+  - Uploads results back to S3
+  - Job completes
+
+  Step 3: Transcoder Service → App Service (The Webhook)
+  Transcoder Service makes HTTP call TO App Service:
+  POST https://app-service.com/webhook/transcode-complete
+  {
+    "jobId": "job_xyz",
+    "videoId": "abc123",
+    "status": "completed",
+    "outputs": { ... }
+  }

@@ -1,0 +1,11 @@
+## Tech Stack ##
+AWS 
+graphQL btween client and server
+within server, it is using GRPC
+storage for fastDB like scylrDB
+
+
+## High level ##
+video streamer  -> live streaming platform -> viewer
+
+user -> live streaming platform using real time messaging protocol
