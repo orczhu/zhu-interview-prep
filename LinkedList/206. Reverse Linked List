@@ -13,3 +13,9 @@ public class Solution {
         return prev;
     }
 }
+======
+while has to be head, otherwise missing last elem
+双指针
+pre  cur         pre  cur
+     a  ->  b -> c
+return pre

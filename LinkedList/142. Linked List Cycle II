@@ -19,3 +19,7 @@ public class Solution {
         return null;
     }
 }
+
+===
+Idea. fast slow pointer, after they met, fast back to head, slow keep going, the position where they met which
+is the intersection
