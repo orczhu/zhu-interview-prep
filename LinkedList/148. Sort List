@@ -101,3 +101,85 @@ class Solution:
         tail.next = h1 if h1 else h2
         return dummy.next
         
+=== quicksort ====
+from lintcode import (
+    ListNode,
+)
+
+"""
+Definition of ListNode:
+class ListNode(object):
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+"""
+
+class Solution:
+    """
+    @param head: The head of linked list.
+    @return: You should return the head of the sorted linked list, using constant space complexity.
+    """
+    def sort_list(self, head: ListNode) -> ListNode:
+        # write your code here
+        if not head or not head.next:
+            return head
+        mid = self.find_mid(head)
+        # idea pivot is mid, < mid => append left, > mid append right
+        new_left_dummy = ListNode(0)
+        new_left_tail = new_left_dummy
+        new_mid_dummy = ListNode(0)
+        new_mid_tail = new_mid_dummy
+        new_right_dummy = ListNode(0)
+        new_right_tail = new_right_dummy
+        while head:
+            if head.val < mid.val:
+                new_left_tail.next = head
+                head = head.next
+                new_left_tail = new_left_tail.next
+            elif head.val == mid.val:
+                new_mid_tail.next = head
+                head = head.next
+                new_mid_tail = new_mid_tail.next
+            else:
+                new_right_tail.next = head
+                head = head.next
+                new_right_tail = new_right_tail.next
+        # cut off tails
+        new_left_tail.next = None
+        new_mid_tail.next = None
+        new_right_tail.next = None
+
+        # sort_list
+        left  = self.sort_list(new_left_dummy.next)
+        right = self.sort_list(new_right_dummy.next)
+        # connect
+
+        return self.connect(left, new_mid_dummy.next, right)
+
+    def find_mid(self, head: ListNode) -> ListNode:
+        if not head:
+            return None
+        slow = head
+        fast = head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+    def connect(self, left: ListNode, mid: ListNode, right: ListNode) -> ListNode:
+        dummy = ListNode(0)
+        tail = dummy
+
+        # attach left
+        tail.next = left
+        while tail.next:
+            tail = tail.next
+
+        # attach mid
+        tail.next = mid
+        while tail.next:
+            tail = tail.next
+
+        # attach right
+        tail.next = right
+
+        return dummy.next
