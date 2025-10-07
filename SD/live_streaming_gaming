@@ -9,3 +9,7 @@ storage for fastDB like scylrDB
 video streamer  -> live streaming platform -> viewer
 
 user -> live streaming platform using real time messaging protocol
+rtmp: tcp based
+srt:security reliable transport -> udp based for poor network
+live streaming -> PoP server -> transcoding and segamentation -> packaging
+mostly HLS/.mp4 with small chunks with seconds and cache by CDN

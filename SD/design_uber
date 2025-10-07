@@ -1,0 +1,124 @@
+  POST /api/v1/trip/fare-estimate
+
+  {
+    "userId": "string",
+    "pickup": {
+      "lat": 37.7749,
+      "lng": -122.4194
+    },
+    "destination": {
+      "lat": 37.7849,
+      "lng": -122.4094
+    },
+    "rideType": "uberX|uberXL|uberBlack",
+    "timestamp": "2024-01-01T10:00:00Z"
+  }
+
+
+  Enhanced Ride Request API:
+
+  Request:
+
+  POST /api/v1/ride/request
+
+  {
+    "userId": "user123",
+    "carType": "uberX",
+    "pickup": {
+      "lat": 37.7749,
+      "lng": -122.4194,
+      "address": "123 Main St, SF",
+      "instructions": "Near Starbucks"
+    },
+    "destination": {
+      "lat": 37.7849,
+      "lng": -122.4094,
+      "address": "456 Oak St, SF"
+    },
+    "paymentMethodId": "pm_12345",
+    "notes": "Please call when arrived"
+  }
+
+  Response:
+
+  {
+    "rideId": "ride_abc123",
+    "status": "SEARCHING_DRIVER",
+    "estimatedFare": {
+      "min": 12.50,
+      "max": 15.80,
+      "currency": "USD"
+    },
+    "estimatedPickupTime": "5-8 minutes",
+    "searchRadius": "2 miles",
+    "timestamp": "2024-01-01T10:00:00Z"
+  }
+
+  ==== Matching driver =====
+    # Enhanced matching logic
+  def find_available_drivers(pickup_lat, pickup_lng, car_type, radius_miles=5):
+      # Query quadtree for pickup location
+      leaf_nodes = quadtree.query_radius(pickup_lat, pickup_lng, radius_miles)
+
+      available_drivers = []
+      for node in leaf_nodes:
+          drivers = get_drivers_in_node(node.id)
+          for driver in drivers:
+              if (driver.status == 'AVAILABLE' and
+                  driver.car_type == car_type and
+                  calculate_distance(driver.lat, driver.lng, pickup_lat, pickup_lng) <= radius_miles):
+                  available_drivers.append(driver)
+
+      # Sort by distance + rating
+      return sorted(available_drivers, key=lambda d: (d.distance, -d.rating))[:10]
+
+
+==== Redis lock ====
+3. Redis Distributed Lock Enhancement:
+
+  # Better distributed lock with expiration
+  def try_accept_ride(ride_id, driver_id, timeout=30):
+      lock_key = f"ride_lock:{ride_id}"
+
+      # Try to acquire lock with expiration
+      if redis.set(lock_key, driver_id, nx=True, ex=timeout):
+          # Driver got the lock - update ride status
+          update_ride_status(ride_id, 'ACCEPTED', driver_id)
+          return True
+      else:
+          return False  # Ride already taken
+==== living tracking driver ====
+parial update quadtree
+* three layers cache
+* Multi-Layer Caching Strategy:
+
+* Layer 1: Redis for real-time locations (TTL: 60s)
+  redis.setex(f"driver_location:{driver_id}", 60, json.dumps({
+      "lat": 37.7749, "lng": -122.4194,
+      "status": "AVAILABLE", "timestamp": now()
+  }))
+
+* Layer 2: In-memory quadtree (updated every 5 minutes)
+* Layer 3: Database for persistence (updated every 10 minutes)
+
+only update quadtree when driver is moving out of radius
+build quadtree from redis
+  class LocationService:
+      def __init__(self):
+          self.city_quadtrees = {}  # One quadtree per city
+          self.last_rebuild = {}
+
+      def get_quadtree(self, city_id):
+          if city_id not in self.city_quadtrees:
+              self.city_quadtrees[city_id] = self.build_quadtree_from_redis(city_id)
+          return self.city_quadtrees[city_id]
+        
+  📊 Performance Comparison:
+
+  | Aspect       | QuadTree              | Geohash + Redis          |
+  |--------------|-----------------------|--------------------------|
+  | Memory Usage | High (tree structure) | Low (hash strings)       |
+  | Query Speed  | O(log n)              | O(1) hash lookup         |
+  | Updates      | O(log n) rebalancing  | O(1) set operations      |
+  | Scalability  | Complex sharding      | Natural partitioning     |
+  | Persistence  | Requires rebuilding   | Native Redis persistence |
