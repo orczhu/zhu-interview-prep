@@ -1,0 +1,31 @@
+https://www.lintcode.com/problem/1375/description
+# slow and fast pointer
+class Solution:
+    """
+    @param s: a string
+    @param k: an integer
+    @return: the number of substrings there are that contain at least k distinct characters
+    """
+    def k_distinct_characters(self, s: str, k: int) -> int:
+        # Write your code here
+        if not s:
+            return 0
+        c_map = {}
+        slow = 0
+        fast = 0
+        count = 0
+        for slow in range(len(s)):
+            while fast < len(s) and len(c_map) < k:
+                if s[fast] not in c_map:
+                    c_map[s[fast]] = 1
+                else:
+                    c_map[s[fast]] += 1
+                fast += 1
+            # 1 2 3 4
+            if len(c_map) >= k:
+                count += len(s) - fast + 1
+            # since slow is moving need to remvoe s[slow] character
+            c_map[s[slow]] -= 1
+            if c_map[s[slow]] == 0:
+                c_map.pop(s[slow])
+        return count

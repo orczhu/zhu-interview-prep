@@ -1,0 +1,92 @@
+zone in more
+JWT token
+Header
+  type
+  algorithm
+
+body
+  subject
+  issu
+  exp
+  nbf
+  iat
+  aud
+  claim
+
+signature
+  
+
+TLS handshake (1.2 -> 1.3)
+
+TLS 1.3 fast handshake than tls 1.2
+
+TLS 1.3 (ciper here is using empheral key for this session)
+only handshake once
+client hello (version, ciper, sni ..)
+service hello (version, ciper)
+send server cert
+server auth: verify server cert and chain validation
+if (mtls) server request client's cert
+after finish
+switch to symmetric encrption for security connection
+
+tls 1.2
+separate message for key exchange and certification validation
+
+it is call forward secret
+
+
+OAuth 2.0
+
+Authorization Code Grant
+Authorization Code Grant is used to get the access token
+grant type: authorization_code
+grant type: refresh_token
+
+sample code_grant request:
+POST https://auth.example.com/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code
+&code=SplxlOBeZQQYbYS6WxSbIA
+&redirect_uri=https://myapp.com/callback
+&client_id=abc123
+&client_secret=supersecret
+
+sample output:
+{
+  "access_token": "ACCESS_TOKEN_123",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "refresh_token": "REFRESH_TOKEN_ABC",
+  "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "scope": "openid profile email"
+}
+refresh token + access token together
+
+however for grant type: refresh_token, 
+refresh token is not included in the response, optional
+
+{
+  "access_token": "NEW_ACCESS_TOKEN_456",
+  "token_type": "Bearer",
+  "expires_in": 3600
+}
+
+
+PKCE (Proof Key for Code Exchange)
+for client cannot keep secret
+it will generate coder verifier and coder challenge
+service side will save challenge and return auth code
+for /token client will attach auth_code and code verifier
+IDP server will verify code verifier and return access token
+
+
+
+
+
+Client Credentials Grant
+Client Credentials Grant is used to get the access token
+
+Implicit Grant
+Implicit Grant is used to get the access token
