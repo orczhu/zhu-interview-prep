@@ -29,3 +29,100 @@ class Solution:
             if c_map[s[slow]] == 0:
                 c_map.pop(s[slow])
         return count
+### https://www.lintcode.com/problem/32/description
+class Solution:
+    """
+    @param source: A string
+    @param target: A string
+    @return: A string denote the minimum window, return "" if there is no such a string
+    """
+    def min_window(self, source: str, target: str) -> str:
+        # write your code here
+        if not source or not target:
+            return ""
+        target_map = {}
+        target_uni_count = 0
+        for i in range(len(target)):
+            if target[i] not in target_map:
+                target_map[target[i]] = 1
+                target_uni_count += 1
+            else:
+                target_map[target[i]] += 1
+        
+        source_uni_count = 0
+        source_map = {}
+        slow = 0
+        fast = 0
+        result = ""
+        size = float('inf')
+        for slow in range(len(source)):
+            while fast < len(source) and source_uni_count < target_uni_count:
+                source_map[source[fast]] = source_map.get(source[fast], 0) + 1
+                if source_map.get(source[fast]) == target_map.get(source[fast], 0):
+                    # means finding one match
+                    source_uni_count += 1 
+                fast += 1
+            if target_uni_count == source_uni_count:
+                if fast - slow < size:
+                    size = fast - slow
+                    result = source[slow:fast]
+            # move slow
+            source_map[source[slow]] -= 1
+            if source[slow] in target_map and source_map[source[slow]] < target_map[source[slow]]:
+                source_uni_count -= 1
+        
+        if size == float('inf'):
+            return ""
+        else:
+            return result
+
+
+
+
+
+386 · Longest Substring with At Most K Distinct Characters
+
+这个题不想简单的快慢指针。
+at most K distinct
+inner loop开指针 dict < k, 不能是 <=k, 应为 =k, 的情况下，可能加入的值大于k, 所以条件是
+len(dict) < k or fast key still in dict, why we need s[fast] in dict, 当len(dict) = k 时，我们允许出现过的character keep growing,
+这样满足题目disinct k, 但不会漏掉继续延长字符串
+
+题解代码
+python
+class Solution:
+    """
+    @param s: A string
+    @param k: An integer
+    @return: An integer
+    """
+    def length_of_longest_substring_k_distinct(self, s: str, k: int) -> int:
+        # write your code here
+        if not s: 
+            return 0 
+        
+        if len(set(s)) <= k:
+            return len(s)
+        
+        k_set = dict()
+        slow = 0
+        fast = 0
+        result = float('-inf')
+        for slow in range(len(s)):
+            while fast < len(s) and (len(k_set) < k or s[fast] in k_set):
+                k_set[s[fast]] = k_set.get(s[fast], 0) + 1
+                result = max(fast - slow + 1, result)
+                fast += 1
+                
+     
+            # move slow
+            if s[slow] in k_set:
+                k_set[s[slow]] -= 1
+                if k_set[s[slow]] == 0:
+                    k_set.pop(s[slow])
+        
+        if result == float('-inf'):
+            return 0
+        return result
+
+
