@@ -1,0 +1,60 @@
+先单线程，followup多线程，只考虑一个hostname下的页面
+比伊尔丝儿多的内容是需要考虑fragment，就是url里#…这一块的内容要去掉，不需要考虑url normalization。
+两个遇到的坑：
+一个是 URL 要先把fragment去掉再去重，这个我虽然知道，但讲的时候顺序没说清楚，让他一直追问 sanitize 发生在哪一步；
+另一个就是并发那块，我thread pool + task sync都很熟，刷题也做过类似的，但面试时我脑子一抽先说了几种 primitive 的方式，面试官的表情当场… 后面虽然补救到 threadpool，但他明显已经觉得方向不太对了
+面的时候也expand了一些sd的相关问题但没有聊很多，估计是踩坑后就被默默否了
+
+有#
+abc.com/foo.html
+abc.com/foo.html#section1
+abc.com/foo.html#section2
+abc.com/foo.html#section2#2C (这种也是合法的section，所以需要根据第一个#来split?)
+
+
+https://leetcode.com/problems/web-crawler/
+https://leetcode.com/problems/web-crawler-multithreaded/description/
+
+
+
+电面：没有coding，直接上SD，设计聊天系统，之前没在地里见过，不知道是新题还是面试官心血来潮。系统要求只支持1对1聊天，group/channel什么的都不需要。面试官对于细节要求很高，对感兴趣的不停深挖，建议好好准备。
+
+昂赛一共5轮，
+
+代码轮Q1是网虫
+
+非技术电面：问了大概十几个问题，包含对公司愿景的看法，为什么想来等等。事前准备了，但是回答的时候因为时间限制根本没法全部说完，建议说快一点，控制好时间。不然面试官会不得不打断你，然后问下一个问题。
+
+设计轮Q1，不是常见因佛伦斯那道题，是部署模型，应该是增加题库或者有些变化。题目是给你一个集群，里面几百个host，然后跟模型repo之间的带宽是10GB/s，模型几百G，每个host也有10GB带宽，然后之间也可以互相复制。一个基本思路是尽快把模型下载到一个host，然后host之间互相传播，最后传播路径会类似于一个树，这个方案还是不够快，然后我给了一个分块传播的想法，就是一个模型拆分成很多小块，然后每个小块好了就立马开始传播，这样可以更早得利用上其他host的带宽。
+
+经验论：老板聊聊项目和经验，相对传统的面试论，会问你怎么处理冲突、什么项目最骄傲之类
+
+项目论：展示项目
+
+全部6论下来，感觉人类学的面试体验非常好，所有人全程都非常engaging，也非常helpful，讨论的也很有深度，确实是非常好的公司和团队文化！
+
+目前还在等结果，有过来人可以介绍一下多久可以拿到update嘛？
+
+
+
+webcrawler,
+下面这个api给了 async 和 sync的两种可以直接用的
+getLinksFrom(link: String) -> [String]
+刚一开始的要求是打印所有的links. 我就简单写了个dfs.
+
+
+后来发现太多了crawl不完，才提醒了两个限制条件：
+只crawl  主域名和seed url相同的url （ 啊为啥不早说)
+url 最后如果有#，后面的部分可以丢掉，前面去重。
+
+
+
+改了之后面试官说还是不对，应该只有少于100个结果，debug了一会也没找出来就问问题了(后来回头才发现，我parse url的时候没有吧#这个sign去掉， 导致 www.ab.com/param# 和  www.ab.com/param 算不同的url，才多了一些。
+
+
+于是就挂了。
+我的理解是如果前面顺利的话，还要写个多线程版本， 所以挂了也不亏。
+分享出来求米。谢谢大家
+
+
+
