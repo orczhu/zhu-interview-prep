@@ -1,3 +1,6 @@
+https://www.1point3acres.com/interview/problems/company/anthropic?utm_source=company_widget
+
+
 High Chance
 网虫
 
@@ -35,7 +38,7 @@ Q6 tokenize
 Problems 
 https://www.1point3acres.com/interview/problems/company/anthropic 
 
-Web crawler 
+Web crawler  V
 
 https://www.1point3acres.com/bbs/thread-1157666-1-1.html 
 
@@ -105,7 +108,11 @@ https://www.1point3acres.com/bbs/thread-1142861-1-1.html
 
 https://www.1point3acres.com/bbs/thread-1137669-1-1.html 
 
-Image processing 
+
+
+
+
+Image processing  V
 
 https://www.1point3acres.com/bbs/thread-1157730-1-1.html 
 
@@ -118,4 +125,18 @@ https://www.1point3acres.com/bbs/thread-1154439-1-1.html
 System design
 Inference API SD 
 
-model deployment
+
+
+
+
+比较经典的题，文件找重，hack2hire上有
+比较坑的是没有任何helper code
+需要手搓文件系统的methods，好在允许谷歌查找，但也还是花了一些时间在上面
+之后就是问了哪些地方可能break（主要就是hash吧），如何更有效率（分布式etc）
+
+希望能过
+
+
+Total index:
+
+https://www.1point3acres.com/interview/problems/company/anthropic?utm_source=company_widget

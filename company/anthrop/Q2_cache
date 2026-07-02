@@ -1,0 +1,6 @@
+This question is outdated - the new question is about extending an existing LRU cache, which is built on top of python 3.7's collections.OrderedDict .
+the LRU has a bug which u got to fix. it is used to store functions + their args + results of the fuction. u got to extend it so it stores any *args / **kwargs. once u pass all tests, you add code to serialize it to disk, and load it at start ( pickle vs json )
+
+trick: make sure key  since input(*args, **kwargs)
+- seriable 
+
